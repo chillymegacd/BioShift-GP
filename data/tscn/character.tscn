@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://drsagnv4bgfbv"]
+
+[ext_resource type="Script" path="res://src/character.gd" id="1_ck1n0"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7fd3q"]
+bounce = 0.25
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_enj6b"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qdbsr"]
+
+[node name="Character" type="RigidBody3D"]
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+physics_material_override = SubResource("PhysicsMaterial_7fd3q")
+script = ExtResource("1_ck1n0")
+move_speed = 1000.0
+accel_speed = 30.0
+jump_speed = 15.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_enj6b")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_qdbsr")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, -2, 0)
