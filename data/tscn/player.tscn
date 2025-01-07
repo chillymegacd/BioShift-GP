@@ -1,8 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://6eg6wxyslsgi"]
+[gd_scene load_steps=7 format=3 uid="uid://6eg6wxyslsgi"]
 
 [ext_resource type="PackedScene" uid="uid://drsagnv4bgfbv" path="res://data/tscn/character.tscn" id="1_pcrba"]
 [ext_resource type="Script" path="res://data/tscn/player.gd" id="2_e6ilp"]
 [ext_resource type="Texture2D" uid="uid://bkomcy4dsqvi0" path="res://data/png/speedometer.png" id="3_rta8y"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_g4ndm"]
+friction = 0.0
+bounce = 0.25
 
 [sub_resource type="Gradient" id="Gradient_xfwt8"]
 offsets = PackedFloat32Array(0)
@@ -14,10 +18,11 @@ width = 32
 height = 2
 
 [node name="Player" instance=ExtResource("1_pcrba")]
+physics_material_override = SubResource("PhysicsMaterial_g4ndm")
 script = ExtResource("2_e6ilp")
 
 [node name="Camera3D" type="Camera3D" parent="." index="3"]
-transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1.5, 3)
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 3, 6)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." index="4"]
 
