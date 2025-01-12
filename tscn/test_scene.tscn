@@ -1,0 +1,63 @@
+[gd_scene load_steps=8 format=3 uid="uid://cwgyq2ccdtvgi"]
+
+[ext_resource type="PackedScene" uid="uid://hb1bhnr003o2" path="res://tscn/player/player.tscn" id="1_fihvj"]
+[ext_resource type="Script" path="res://tscn/check.gd" id="2_7gssq"]
+
+[sub_resource type="Curve3D" id="Curve3D_18xvj"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -30, 25, 0, 0, 0, 0, 0, -25, 0, -50, 0, 0, 0, 0, 0, 0, -37.5, 10, -50, 0, 0, 0, 0, 0, 0, -87.5, 10, -50, 0, 0, 0, -25, 0, 0, -100, 0, -50, 0.25, 0, 0, -86.76, 0, 150, -150, 0, 0, 0, 0, 75, 0, 0, 0, 0, 0, 30),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 8
+
+[sub_resource type="Gradient" id="Gradient_m3g0t"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.5)
+colors = PackedColorArray(0.539663, 0.539663, 0.539663, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8qsh8"]
+gradient = SubResource("Gradient_m3g0t")
+width = 256
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbqtx"]
+albedo_texture = SubResource("GradientTexture2D_8qsh8")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tmxcq"]
+size = Vector3(20, 10, 1)
+
+[node name="TestScene" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("1_fihvj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2, -3)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 3, 0)
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
+curve = SubResource("Curve3D_18xvj")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Path3D"]
+material_override = SubResource("StandardMaterial3D_gbqtx")
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 1, 0, 2, 2, 2, 2, 1, 18, 1, 18, 2, 20, 2, 20, 0)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+
+[node name="Check" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, -8)
+monitorable = false
+script = ExtResource("2_7gssq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Check"]
+shape = SubResource("BoxShape3D_tmxcq")
+
+[connection signal="area_entered" from="Check" to="Check" method="_on_area_entered"]

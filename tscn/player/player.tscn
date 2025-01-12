@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3 uid="uid://hb1bhnr003o2"]
+
+[ext_resource type="Script" path="res://src/player/player.gd" id="1_5csgb"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dcdqx"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_5csgb")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+target_position = Vector3(0, -2, 0)
+debug_shape_thickness = 5
+
+[node name="Model" type="CSGCylinder3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.515184, -0.584203)
+current = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_dcdqx")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.977416, 0.211325, 0, -0.211325, 0.977416, 0, 2.36, 4)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+offset_left = 16.0
+offset_right = 32.0
+offset_bottom = 40.0
+
+[node name="RPM" type="ColorRect" parent="CanvasLayer"]
+offset_left = 40.0
+offset_right = 56.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Gear" type="Label" parent="CanvasLayer"]
+offset_left = 272.0
+offset_top = 208.0
+offset_right = 312.0
+offset_bottom = 231.0
+text = "0"
+
+[node name="Area3D" type="Area3D" parent="."]
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("CapsuleShape3D_dcdqx")
