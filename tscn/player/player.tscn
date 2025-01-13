@@ -1,10 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://hb1bhnr003o2"]
+[gd_scene load_steps=4 format=3 uid="uid://hb1bhnr003o2"]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_5csgb"]
+[ext_resource type="PackedScene" uid="uid://basawpe0yy462" path="res://blend/rabbit.blend" id="2_y2ha5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dcdqx"]
+radius = 0.25
+height = 1.75
 
 [node name="Player" type="CharacterBody3D"]
+floor_stop_on_slope = false
+floor_max_angle = 1.22173
+floor_snap_length = 2.0
 script = ExtResource("1_5csgb")
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
@@ -12,43 +18,63 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 target_position = Vector3(0, -2, 0)
 debug_shape_thickness = 5
 
-[node name="Model" type="CSGCylinder3D" parent="."]
+[node name="Model" parent="." instance=ExtResource("2_y2ha5")]
 
-[node name="Camera3D" type="Camera3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.515184, -0.584203)
-current = true
+[node name="Skeleton3D" parent="Model/Armature" index="0"]
+bones/0/position = Vector3(1.59886e-09, 0.28432, -0.00490686)
+bones/0/rotation = Quaternion(-8.74228e-08, 0, -2.8486e-14, 1)
+bones/1/rotation = Quaternion(-0.487683, 1.04072e-07, -2.17044e-07, 0.873021)
+bones/2/rotation = Quaternion(-0.217328, 2.09283e-14, -1.22629e-07, 0.976099)
+bones/3/rotation = Quaternion(-0.576491, -0.265831, 0.717183, 0.287473)
+bones/4/rotation = Quaternion(-0.576491, 0.265831, -0.717183, 0.287473)
+bones/5/position = Vector3(0.176629, 0.239288, 0.0383597)
+bones/5/rotation = Quaternion(0.12901, 0.6705, -0.717447, 0.138043)
+bones/6/rotation = Quaternion(0.166495, -0.0206191, -0.128748, 0.977383)
+bones/7/position = Vector3(-0.176629, 0.239288, 0.0383596)
+bones/7/rotation = Quaternion(0.12901, -0.6705, 0.717447, 0.138043)
+bones/8/rotation = Quaternion(0.166495, 0.0206191, 0.128748, 0.977383)
+bones/9/position = Vector3(0.225915, 0.224683, -2.5091e-08)
+bones/9/rotation = Quaternion(-0.702747, -0.0783991, 0.702747, 0.078399)
+bones/9/scale = Vector3(1, 1, 0.999999)
+bones/10/rotation = Quaternion(6.36449e-08, 2.36797e-07, -0.404356, 0.914602)
+bones/11/position = Vector3(-0.225915, 0.224683, -2.5091e-08)
+bones/11/rotation = Quaternion(0.702747, -0.0783991, 0.702747, -0.0783989)
+bones/11/scale = Vector3(1, 1, 0.999999)
+bones/12/rotation = Quaternion(6.3645e-08, -2.36797e-07, 0.404356, 0.914602)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.145311, 0)
 shape = SubResource("CapsuleShape3D_dcdqx")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.977416, 0.211325, 0, -0.211325, 0.977416, 0, 2.36, 4)
+current = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-offset_left = 16.0
-offset_right = 32.0
-offset_bottom = 40.0
-
-[node name="RPM" type="ColorRect" parent="CanvasLayer"]
-offset_left = 40.0
-offset_right = 56.0
-offset_bottom = 40.0
-
-[node name="Label" type="Label" parent="CanvasLayer"]
+[node name="Time" type="Label" parent="CanvasLayer"]
 offset_right = 40.0
 offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 
-[node name="Gear" type="Label" parent="CanvasLayer"]
-offset_left = 272.0
-offset_top = 208.0
-offset_right = 312.0
-offset_bottom = 231.0
+[node name="Speed" type="Label" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "0"
+horizontal_alignment = 2
 
 [node name="Area3D" type="Area3D" parent="."]
 monitoring = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("CapsuleShape3D_dcdqx")
+
+[editable path="Model"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cwgyq2ccdtvgi"]
+[gd_scene load_steps=13 format=3 uid="uid://cwgyq2ccdtvgi"]
 
 [ext_resource type="PackedScene" uid="uid://hb1bhnr003o2" path="res://tscn/player/player.tscn" id="1_fihvj"]
 [ext_resource type="Script" path="res://tscn/check.gd" id="2_7gssq"]
@@ -21,9 +21,28 @@ width = 256
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gbqtx"]
 albedo_texture = SubResource("GradientTexture2D_8qsh8")
+uv1_scale = Vector3(0.1, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tmxcq"]
 size = Vector3(20, 10, 1)
+
+[sub_resource type="Gradient" id="Gradient_4h51g"]
+colors = PackedColorArray(0, 0, 1, 1, 0.65321, 0.924138, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4l6ed"]
+gradient = SubResource("Gradient_4h51g")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_hh0ho"]
+panorama = SubResource("GradientTexture2D_4l6ed")
+
+[sub_resource type="Sky" id="Sky_eaeju"]
+sky_material = SubResource("PanoramaSkyMaterial_hh0ho")
+
+[sub_resource type="Environment" id="Environment_035ep"]
+background_mode = 2
+sky = SubResource("Sky_eaeju")
+reflected_light_source = 1
 
 [node name="TestScene" type="Node3D"]
 
@@ -32,6 +51,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2, -3)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 3, 0)
+shadow_enabled = true
 
 [node name="Path3D" type="Path3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
@@ -59,5 +79,8 @@ script = ExtResource("2_7gssq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Check"]
 shape = SubResource("BoxShape3D_tmxcq")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_035ep")
 
 [connection signal="area_entered" from="Check" to="Check" method="_on_area_entered"]
