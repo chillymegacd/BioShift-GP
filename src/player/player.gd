@@ -11,11 +11,12 @@ enum {
 
 @export var max_speeds := [0.0, 12.5, 25.0, 50.0, 75.0, 100.0]
 @export var accel := 0.25
-@export var brake_speed := 0.25
+@export var brake_speed := 0.35
 @export var air_drag := 0.1
-@export var turn_speeds := [0.0, 2.5, 1.5, 1.0, 0.5]
+@export var turn_speeds := [0.0, 5.0, 3.0, 2.0, 1.0]
 @export var jump_speed := 7.5
 
+var final_turn_axis := 0.0
 var state := GROUND
 var gear := 1
 var speed := 0.0
@@ -42,17 +43,19 @@ func model_control(xform, delta: float, final_turn_axis: float) -> void:
 	$Model.rotation.y = final_turn_axis * deg_to_rad(360)
 	turn_anim_pos = final_turn_axis * -30 + $Model/AnimationPlayer.current_animation_length / 2
 	if $Model/AnimationPlayer.current_animation == "Turn": $Model/AnimationPlayer.seek(turn_anim_pos)
+	#$Model/Armature/Skeleton3D/Eye_r.get_surface_override_material(0).uv1_offset.x = -speed / max_speeds[5]
+	#$Model/Armature/Skeleton3D/Eye_l.get_surface_override_material(0).uv1_offset.x = -speed / max_speeds[5]
 
 func camera_control(final_turn_axis: float, delta: float) -> void:
 	camera.rotation.x = lerp(camera.rotation.x, velocity.y * .025, 15 * delta)
 	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-45), deg_to_rad(45))
-	camera.rotation.z = lerp(camera.rotation.z, final_turn_axis, 15 * delta)
+	camera.rotation.z = lerp(camera.rotation.z, final_turn_axis * 2, 15 * delta)
 	camera.rotation.y = lerp(camera.rotation.y, final_turn_axis, 15 * delta)
 	camera.position.y = lerp(camera.position.y, 1.5 + velocity.y * .1, 15 * delta)
 	camera.position.y = clamp(camera.position.y, 0, 5)
 
 func ui_control() -> void:
-	$CanvasLayer/Time.text = "TIME: " + str(snapped(current_time, 0.01)) + "\nRECORD: " + str(snapped(best_time, 0.01)) + "\nLAST: " + str(last_lap)
+	$CanvasLayer/Time.text = "TIME: " + str(snapped(current_time, 0.01)) + "\nRECORD: " + str(snapped(best_time, 0.01)) + "\nLAST: " + str(last_lap) + "\nFPS: " + str(Engine.get_frames_per_second())
 	$CanvasLayer/Speed.text = "SPEED: " + str(roundi(final_speed)) + "\nRPM: " + str(rpm) + "\nGEAR: " + str(gear)
 
 func checkpoint() -> void:
@@ -71,9 +74,9 @@ func _ready() -> void:
 	max_rpms.append(max_rpms[2] + max_speeds[4])
 
 func _physics_process(delta: float) -> void:
-	var shift_axis := Input.get_axis("air_brake_right", "air_brake_left") * 2
+	var shift_axis := Input.get_axis("air_brake_right", "air_brake_left") * 0.5
 	var turn_axis := Input.get_axis("right_turn", "left_turn") + shift_axis
-	var final_turn_axis = turn_axis * (turn_speeds[gear] * delta)
+	final_turn_axis = move_toward(final_turn_axis, turn_axis * (turn_speeds[gear] * delta), 0.25 * delta)
 	var accel_str := -Input.get_action_strength("accel") + Input.get_action_strength("brake")
 	rotate_y(final_turn_axis)
 	var n = Vector3.UP
@@ -107,9 +110,11 @@ func _physics_process(delta: float) -> void:
 			gear += 1
 	elif rpm < 1 and gear > 1:
 		gear -= 1
-	#if is_on_wall():
-		#velocity.x += (get_wall_normal().x * -speed * 10)
-		#velocity.z += (get_wall_normal().z * -speed * 10)
+	if is_on_wall():
+		var speed_reduction = rad_to_deg(abs(atan2(get_wall_normal().x, get_wall_normal().z) - rotation.y)) / 90.0
+		speed *= speed_reduction * 0.5
+		velocity.x += (get_wall_normal().x * -speed * 10)
+		velocity.z += (get_wall_normal().z * -speed * 10)
 	move_and_slide()
 	camera_control(final_turn_axis, delta)
 	model_control(xform, delta, final_turn_axis)

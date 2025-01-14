@@ -1,7 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://hb1bhnr003o2"]
+[gd_scene load_steps=7 format=3 uid="uid://hb1bhnr003o2"]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_5csgb"]
 [ext_resource type="PackedScene" uid="uid://basawpe0yy462" path="res://blend/rabbit.blend" id="2_y2ha5"]
+[ext_resource type="Texture2D" uid="uid://j24eq6s24ei6" path="res://blend/eye.png" id="3_r6xuq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_amxbf"]
+shading_mode = 0
+albedo_texture = ExtResource("3_r6xuq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6i8jf"]
+shading_mode = 0
+albedo_texture = ExtResource("3_r6xuq")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dcdqx"]
 radius = 0.25
@@ -21,26 +30,21 @@ debug_shape_thickness = 5
 [node name="Model" parent="." instance=ExtResource("2_y2ha5")]
 
 [node name="Skeleton3D" parent="Model/Armature" index="0"]
-bones/0/position = Vector3(1.59886e-09, 0.28432, -0.00490686)
-bones/0/rotation = Quaternion(-8.74228e-08, 0, -2.8486e-14, 1)
-bones/1/rotation = Quaternion(-0.487683, 1.04072e-07, -2.17044e-07, 0.873021)
-bones/2/rotation = Quaternion(-0.217328, 2.09283e-14, -1.22629e-07, 0.976099)
-bones/3/rotation = Quaternion(-0.576491, -0.265831, 0.717183, 0.287473)
-bones/4/rotation = Quaternion(-0.576491, 0.265831, -0.717183, 0.287473)
-bones/5/position = Vector3(0.176629, 0.239288, 0.0383597)
-bones/5/rotation = Quaternion(0.12901, 0.6705, -0.717447, 0.138043)
-bones/6/rotation = Quaternion(0.166495, -0.0206191, -0.128748, 0.977383)
-bones/7/position = Vector3(-0.176629, 0.239288, 0.0383596)
-bones/7/rotation = Quaternion(0.12901, -0.6705, 0.717447, 0.138043)
-bones/8/rotation = Quaternion(0.166495, 0.0206191, 0.128748, 0.977383)
-bones/9/position = Vector3(0.225915, 0.224683, -2.5091e-08)
-bones/9/rotation = Quaternion(-0.702747, -0.0783991, 0.702747, 0.078399)
+bones/5/rotation = Quaternion(-4.75799e-08, -5.80517e-09, -0.707107, 0.707107)
+bones/6/rotation = Quaternion(1.48748e-07, 5.45939e-22, -1.12302e-14, 1)
+bones/7/rotation = Quaternion(-2.20647e-07, -1.67262e-07, 0.707107, 0.707107)
+bones/9/rotation = Quaternion(-0.684831, 0.176084, 0.684832, -0.176085)
 bones/9/scale = Vector3(1, 1, 0.999999)
-bones/10/rotation = Quaternion(6.36449e-08, 2.36797e-07, -0.404356, 0.914602)
-bones/11/position = Vector3(-0.225915, 0.224683, -2.5091e-08)
-bones/11/rotation = Quaternion(0.702747, -0.0783991, 0.702747, -0.0783989)
+bones/10/rotation = Quaternion(-4.44335e-08, 1.68241e-07, 0.0825004, 0.996591)
+bones/11/rotation = Quaternion(0.684831, 0.176084, 0.684832, 0.176085)
 bones/11/scale = Vector3(1, 1, 0.999999)
-bones/12/rotation = Quaternion(6.3645e-08, -2.36797e-07, 0.404356, 0.914602)
+bones/12/rotation = Quaternion(-4.44335e-08, -1.68241e-07, -0.0825004, 0.996591)
+
+[node name="Eye_l" parent="Model/Armature/Skeleton3D" index="9"]
+surface_material_override/0 = SubResource("StandardMaterial3D_amxbf")
+
+[node name="Eye_r" parent="Model/Armature/Skeleton3D" index="10"]
+surface_material_override/0 = SubResource("StandardMaterial3D_6i8jf")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.145311, 0)
@@ -55,7 +59,7 @@ current = true
 [node name="Time" type="Label" parent="CanvasLayer"]
 offset_right = 40.0
 offset_bottom = 23.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0, 1, 1)
 
 [node name="Speed" type="Label" parent="CanvasLayer"]
 anchors_preset = 3
@@ -67,7 +71,7 @@ offset_left = -40.0
 offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0, 1, 1)
 text = "0"
 horizontal_alignment = 2
 
@@ -76,5 +80,8 @@ monitoring = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("CapsuleShape3D_dcdqx")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+visible = false
 
 [editable path="Model"]
