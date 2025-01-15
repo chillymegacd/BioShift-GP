@@ -8,6 +8,7 @@ enum {
 
 @onready var tp_camera := $Camera3D
 @onready var camera = tp_camera
+@onready var raycast := $Model/RayCast3D
 
 @export var max_speeds := [0.0, 12.5, 25.0, 50.0, 75.0, 100.0]
 @export var accel := 0.25
@@ -45,6 +46,14 @@ func model_control(xform, delta: float, final_turn_axis: float) -> void:
 	if $Model/AnimationPlayer.current_animation == "Turn": $Model/AnimationPlayer.seek(turn_anim_pos)
 	#$Model/Armature/Skeleton3D/Eye_r.get_surface_override_material(0).uv1_offset.x = -speed / max_speeds[5]
 	#$Model/Armature/Skeleton3D/Eye_l.get_surface_override_material(0).uv1_offset.x = -speed / max_speeds[5]
+	#for i in range(0, 2):
+	for i in 2:
+		if -speed <= 0:
+			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).scale = Vector3.ZERO
+			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrustlight" + str(i)).light_energy = 0
+		else:
+			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).scale = Vector3(1,1,1) * ((rpm) + 0.5)
+			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrustlight" + str(i)).light_energy = (rpm) * .25
 
 func camera_control(final_turn_axis: float, delta: float) -> void:
 	camera.rotation.x = lerp(camera.rotation.x, velocity.y * .025, 15 * delta)
@@ -81,10 +90,12 @@ func _physics_process(delta: float) -> void:
 	rotate_y(final_turn_axis)
 	var n = Vector3.UP
 	if is_on_floor():
-		if $RayCast3D.is_colliding(): n = $RayCast3D.get_collision_normal()
+		if raycast.is_colliding(): n = raycast.get_collision_normal()
 		if Input.is_action_just_pressed("jump"):
 			$Model/AnimationPlayer.play("Backflip")
-			velocity.y = jump_speed
+			velocity.x += -n.x * jump_speed * 100
+			velocity.y += n.y * jump_speed
+			velocity.z += -n.z * jump_speed * 100
 			state = JUMP
 		if state == FALL:
 			$Model/AnimationPlayer.play("Turn")
@@ -115,9 +126,15 @@ func _physics_process(delta: float) -> void:
 		speed *= speed_reduction * 0.5
 		velocity.x += (get_wall_normal().x * -speed * 10)
 		velocity.z += (get_wall_normal().z * -speed * 10)
+	elif is_on_ceiling():
+		velocity.y += -n.y * jump_speed
 	move_and_slide()
 	camera_control(final_turn_axis, delta)
 	model_control(xform, delta, final_turn_axis)
 	ui_control()
 	if timer_started:
 		current_time += delta
+
+
+func _on_checkpoint_area_entered(area: Area3D) -> void:
+	pass # Replace with function body.

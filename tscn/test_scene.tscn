@@ -1,48 +1,70 @@
-[gd_scene load_steps=9 format=3 uid="uid://cwgyq2ccdtvgi"]
+[gd_scene load_steps=12 format=3 uid="uid://cwgyq2ccdtvgi"]
 
 [ext_resource type="PackedScene" uid="uid://hb1bhnr003o2" path="res://tscn/player/player.tscn" id="1_fihvj"]
-[ext_resource type="PackedScene" uid="uid://dlmq807ris5sn" path="res://blend/easy-course.blend" id="2_x1r62"]
+[ext_resource type="PackedScene" uid="uid://dlmq807ris5sn" path="res://blend/easy-course.blend" id="2_r71vk"]
+[ext_resource type="Script" path="res://tscn/check.gd" id="3_c0h3a"]
 
-[sub_resource type="Gradient" id="Gradient_4h51g"]
-colors = PackedColorArray(0, 0, 1, 1, 0.65321, 0.924138, 1, 1)
+[sub_resource type="Gradient" id="Gradient_72ah0"]
+offsets = PackedFloat32Array(0, 0.15625, 0.71875, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.105882, 0.14902, 0.835294, 1, 0.482353, 0.686275, 1, 1, 0.811765, 1, 1, 1)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_4l6ed"]
-gradient = SubResource("Gradient_4h51g")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ss5w1"]
+gradient = SubResource("Gradient_72ah0")
 fill_from = Vector2(1, 1)
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_hh0ho"]
-panorama = SubResource("GradientTexture2D_4l6ed")
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ufigi"]
+panorama = SubResource("GradientTexture2D_ss5w1")
 
-[sub_resource type="Sky" id="Sky_eaeju"]
-sky_material = SubResource("PanoramaSkyMaterial_hh0ho")
+[sub_resource type="Sky" id="Sky_qvw2d"]
+sky_material = SubResource("PanoramaSkyMaterial_ufigi")
 
-[sub_resource type="Environment" id="Environment_035ep"]
+[sub_resource type="Environment" id="Environment_7end0"]
 background_mode = 2
-sky = SubResource("Sky_eaeju")
-ambient_light_source = 1
+sky = SubResource("Sky_qvw2d")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k1r8a"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7j6l3"]
+metallic = 1.0
+metallic_specular = 1.0
+roughness = 0.29
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6sio"]
 transparency = 1
-cull_mode = 2
-albedo_color = Color(1, 1, 1, 0.0980392)
+shading_mode = 0
+albedo_color = Color(0.843137, 1, 1, 0.458824)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rq375"]
+size = Vector3(30, 30, 1)
 
 [node name="TestScene" type="Node3D"]
 
 [node name="Player" parent="." instance=ExtResource("1_fihvj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.983564, 0)
+transform = Transform3D(0.336684, 0, -0.941618, 0, 1, 0, 0.941618, 0, 0.336684, -135.436, -3.77493, -39.999)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 3, 0)
+shadow_enabled = true
 shadow_bias = 10.0
 shadow_opacity = 0.5
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_035ep")
+environment = SubResource("Environment_7end0")
 
-[node name="easy-course" parent="." instance=ExtResource("2_x1r62")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+[node name="easy-course" parent="." instance=ExtResource("2_r71vk")]
 
 [node name="Plane" parent="easy-course" index="0"]
-surface_material_override/1 = SubResource("StandardMaterial3D_k1r8a")
+surface_material_override/0 = SubResource("StandardMaterial3D_7j6l3")
+surface_material_override/1 = SubResource("StandardMaterial3D_g6sio")
+
+[node name="Checkpoint" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -126.604, 0, -43.3141)
+collision_layer = 0
+monitorable = false
+script = ExtResource("3_c0h3a")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Checkpoint"]
+transform = Transform3D(0.298961, 0.00117038, -0.954265, -0.00205546, 0.999998, 0.000582531, 0.954263, 0.00178731, 0.298963, 0, 0, 0)
+shape = SubResource("BoxShape3D_rq375")
+
+[connection signal="area_entered" from="Checkpoint" to="Checkpoint" method="_on_area_entered"]
 
 [editable path="easy-course"]

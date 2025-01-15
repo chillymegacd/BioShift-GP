@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://hb1bhnr003o2"]
+[gd_scene load_steps=11 format=3 uid="uid://hb1bhnr003o2"]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_5csgb"]
 [ext_resource type="PackedScene" uid="uid://basawpe0yy462" path="res://blend/rabbit.blend" id="2_y2ha5"]
+[ext_resource type="PackedScene" uid="uid://ciam4qy01bns6" path="res://blend/thrust.blend" id="3_dewk4"]
 [ext_resource type="Texture2D" uid="uid://j24eq6s24ei6" path="res://blend/eye.png" id="3_r6xuq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_amxbf"]
@@ -12,6 +13,20 @@ albedo_texture = ExtResource("3_r6xuq")
 shading_mode = 0
 albedo_texture = ExtResource("3_r6xuq")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u31i8"]
+shading_mode = 0
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wsmx7"]
+cull_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.478431, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kdb0o"]
+cull_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dcdqx"]
 radius = 0.25
 height = 1.75
@@ -21,11 +36,6 @@ floor_stop_on_slope = false
 floor_max_angle = 1.22173
 floor_snap_length = 2.0
 script = ExtResource("1_5csgb")
-
-[node name="RayCast3D" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-target_position = Vector3(0, -2, 0)
-debug_shape_thickness = 5
 
 [node name="Model" parent="." instance=ExtResource("2_y2ha5")]
 
@@ -46,6 +56,42 @@ surface_material_override/0 = SubResource("StandardMaterial3D_amxbf")
 [node name="Eye_r" parent="Model/Armature/Skeleton3D" index="10"]
 surface_material_override/0 = SubResource("StandardMaterial3D_6i8jf")
 
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Model/Armature/Skeleton3D" index="27"]
+transform = Transform3D(1, 0, 2.38419e-07, 0, 1, 0, -2.38419e-07, 0, 1, 0, 0.217683, 0)
+bone_name = "Chest_2"
+bone_idx = 1
+
+[node name="thrustlight0" type="OmniLight3D" parent="Model/Armature/Skeleton3D/BoneAttachment3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.105118, 0.137741, -0.2048)
+light_color = Color(1, 0, 0, 1)
+light_energy = 0.0
+
+[node name="thrust0" parent="Model/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("3_dewk4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.105118, 0.137741, -0.2048)
+
+[node name="Thrust0" parent="Model/Armature/Skeleton3D/BoneAttachment3D/thrust0" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_u31i8")
+surface_material_override/1 = SubResource("StandardMaterial3D_wsmx7")
+surface_material_override/2 = SubResource("StandardMaterial3D_kdb0o")
+
+[node name="thrustlight1" type="OmniLight3D" parent="Model/Armature/Skeleton3D/BoneAttachment3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, 0.138, -0.205)
+light_color = Color(1, 0, 0, 1)
+light_energy = 0.0
+
+[node name="thrust1" parent="Model/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("3_dewk4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, 0.138, -0.205)
+
+[node name="Thrust0" parent="Model/Armature/Skeleton3D/BoneAttachment3D/thrust1" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_u31i8")
+surface_material_override/1 = SubResource("StandardMaterial3D_wsmx7")
+surface_material_override/2 = SubResource("StandardMaterial3D_kdb0o")
+
+[node name="RayCast3D" type="RayCast3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+target_position = Vector3(0, -2, 0)
+debug_shape_thickness = 5
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.145311, 0)
 shape = SubResource("CapsuleShape3D_dcdqx")
@@ -53,6 +99,7 @@ shape = SubResource("CapsuleShape3D_dcdqx")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.977416, 0.211325, 0, -0.211325, 0.977416, 0, 2.36, 4)
 current = true
+fov = 80.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -76,6 +123,7 @@ text = "0"
 horizontal_alignment = 2
 
 [node name="Area3D" type="Area3D" parent="."]
+collision_mask = 0
 monitoring = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
@@ -85,3 +133,5 @@ shape = SubResource("CapsuleShape3D_dcdqx")
 visible = false
 
 [editable path="Model"]
+[editable path="Model/Armature/Skeleton3D/BoneAttachment3D/thrust0"]
+[editable path="Model/Armature/Skeleton3D/BoneAttachment3D/thrust1"]

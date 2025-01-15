@@ -11,5 +11,7 @@ func _process(delta: float) -> void:
 	pass
 
 
+
+
 func _on_area_entered(area: Area3D) -> void:
 	area.owner.checkpoint()
