@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://hb1bhnr003o2"]
+[gd_scene load_steps=12 format=3 uid="uid://hb1bhnr003o2"]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_5csgb"]
 [ext_resource type="PackedScene" uid="uid://basawpe0yy462" path="res://blend/rabbit.blend" id="2_y2ha5"]
 [ext_resource type="PackedScene" uid="uid://ciam4qy01bns6" path="res://blend/thrust.blend" id="3_dewk4"]
 [ext_resource type="Texture2D" uid="uid://j24eq6s24ei6" path="res://blend/eye.png" id="3_r6xuq"]
+[ext_resource type="FontFile" uid="uid://csh4m008nb3d2" path="res://ttf/audio-nugget.regular.ttf" id="5_3q4cm"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_amxbf"]
 shading_mode = 0
@@ -87,14 +88,18 @@ surface_material_override/0 = SubResource("StandardMaterial3D_u31i8")
 surface_material_override/1 = SubResource("StandardMaterial3D_wsmx7")
 surface_material_override/2 = SubResource("StandardMaterial3D_kdb0o")
 
-[node name="RayCast3D" type="RayCast3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-target_position = Vector3(0, -2, 0)
-debug_shape_thickness = 5
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Model/Armature/Skeleton3D/BoneAttachment3D"]
+transform = Transform3D(-1, 0, 5.6426e-07, 0, 1, 0, -5.6426e-07, 0, -1, 0, -0.157864, 0)
+remote_path = NodePath("../../../../../CollisionShape3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.145311, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.223399, 0)
 shape = SubResource("CapsuleShape3D_dcdqx")
+
+[node name="RayCast3D" type="RayCast3D" parent="CollisionShape3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.276601, 0)
+target_position = Vector3(0, -2, 0)
+debug_shape_thickness = 5
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.977416, 0.211325, 0, -0.211325, 0.977416, 0, 2.36, 4)
@@ -105,8 +110,14 @@ fov = 80.0
 
 [node name="Time" type="Label" parent="CanvasLayer"]
 offset_right = 40.0
-offset_bottom = 23.0
-theme_override_colors/font_color = Color(1, 0, 1, 1)
+offset_bottom = 27.0
+theme_override_colors/font_color = Color(1, 0.631373, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.235294, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("5_3q4cm")
+theme_override_font_sizes/font_size = 24
+text = "0"
 
 [node name="Speed" type="Label" parent="CanvasLayer"]
 anchors_preset = 3
@@ -115,19 +126,18 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -40.0
-offset_top = -23.0
+offset_top = -27.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_colors/font_color = Color(1, 0, 1, 1)
+theme_override_colors/font_color = Color(1, 0.631373, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.235294, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("5_3q4cm")
+theme_override_font_sizes/font_size = 24
 text = "0"
 horizontal_alignment = 2
-
-[node name="Area3D" type="Area3D" parent="."]
-collision_mask = 0
-monitoring = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("CapsuleShape3D_dcdqx")
+vertical_alignment = 2
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
 visible = false

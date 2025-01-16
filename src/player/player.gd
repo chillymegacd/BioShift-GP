@@ -8,14 +8,14 @@ enum {
 
 @onready var tp_camera := $Camera3D
 @onready var camera = tp_camera
-@onready var raycast := $Model/RayCast3D
+@onready var raycast := $CollisionShape3D/RayCast3D
 
 @export var max_speeds := [0.0, 12.5, 25.0, 50.0, 75.0, 100.0]
 @export var accel := 0.25
 @export var brake_speed := 0.35
 @export var air_drag := 0.1
 @export var turn_speeds := [0.0, 5.0, 3.0, 2.0, 1.0]
-@export var jump_speed := 7.5
+@export var jump_speed := 10.0
 
 var final_turn_axis := 0.0
 var state := GROUND
@@ -24,6 +24,7 @@ var speed := 0.0
 var final_speed := 0.0
 var rpm := 0.0
 var max_rpms := [max_speeds[1]]
+var thrust_str := 0.0
 var turn_anim_pos := 0.5
 var timer_started := false
 var current_time := 0.0
@@ -36,7 +37,7 @@ func align_with_y(xform, new_y):
 	xform.basis = xform.basis.orthonormalized()
 	return xform
 
-func model_control(xform, delta: float, final_turn_axis: float) -> void:
+func model_control(xform, delta: float, final_turn_axis: float, accel_str: float, shift_axis: float) -> void:
 	if !is_on_floor():
 		$Model.rotation.x = lerp(rotation.x, velocity.y / 5.0, 15 * delta)
 		$Model.rotation.x = clamp($Model.rotation.x, deg_to_rad(-45), deg_to_rad(45))
@@ -47,13 +48,14 @@ func model_control(xform, delta: float, final_turn_axis: float) -> void:
 	#$Model/Armature/Skeleton3D/Eye_r.get_surface_override_material(0).uv1_offset.x = -speed / max_speeds[5]
 	#$Model/Armature/Skeleton3D/Eye_l.get_surface_override_material(0).uv1_offset.x = -speed / max_speeds[5]
 	#for i in range(0, 2):
+	thrust_str = lerp(thrust_str, accel_str - abs(shift_axis * 0.25), 15 * delta)
+	thrust_str = clamp(thrust_str, 0.0, 1.0)
 	for i in 2:
-		if -speed <= 0:
-			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).scale = Vector3.ZERO
-			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrustlight" + str(i)).light_energy = 0
-		else:
-			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).scale = Vector3(1,1,1) * ((rpm) + 0.5)
-			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrustlight" + str(i)).light_energy = (rpm) * .25
+		get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).rotation.z += thrust_str
+		if get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).rotation.z > deg_to_rad(360):
+			get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).rotation.z = 0.0
+		get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrust" + str(i)).scale = Vector3(1,1,1) * ((thrust_str) * 1.5)
+		get_node("Model/Armature/Skeleton3D/BoneAttachment3D/thrustlight" + str(i)).light_energy = thrust_str * 0.5
 
 func camera_control(final_turn_axis: float, delta: float) -> void:
 	camera.rotation.x = lerp(camera.rotation.x, velocity.y * .025, 15 * delta)
@@ -64,8 +66,8 @@ func camera_control(final_turn_axis: float, delta: float) -> void:
 	camera.position.y = clamp(camera.position.y, 0, 5)
 
 func ui_control() -> void:
-	$CanvasLayer/Time.text = "TIME: " + str(snapped(current_time, 0.01)) + "\nRECORD: " + str(snapped(best_time, 0.01)) + "\nLAST: " + str(last_lap) + "\nFPS: " + str(Engine.get_frames_per_second())
-	$CanvasLayer/Speed.text = "SPEED: " + str(roundi(final_speed)) + "\nRPM: " + str(rpm) + "\nGEAR: " + str(gear)
+	$CanvasLayer/Time.text = "TIME: " + str(snapped(current_time, 0.01)) + "\nFPS: " + str(Engine.get_frames_per_second())
+	$CanvasLayer/Speed.text = "SPEED: %03d" % (roundi(final_speed)) + "\nRPM: %03d" % (rpm * 100) + "\nGEAR: " + str(gear)
 
 func checkpoint() -> void:
 	if !timer_started:
@@ -101,11 +103,11 @@ func _physics_process(delta: float) -> void:
 			$Model/AnimationPlayer.play("Turn")
 			$Model/AnimationPlayer.seek(turn_anim_pos)
 	else:
-		velocity.y -= 9.8 * delta
+		velocity.y -= 16 * delta
 		if velocity.y <= 0:
 			state = FALL 
 	var xform = align_with_y(global_transform, n)
-	var shift_reduction = (abs(shift_axis) * 5) if final_speed > 5 else 0
+	var shift_reduction = (abs(shift_axis) * 10) if final_speed > 10 else 0
 	speed = move_toward(speed, (max_speeds[gear + 1] * accel_str) + shift_reduction, accel * 60 * delta)
 	if Input.is_action_pressed("brake"):
 		speed += (brake_speed * 30 * delta) + accel_str
@@ -130,7 +132,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y += -n.y * jump_speed
 	move_and_slide()
 	camera_control(final_turn_axis, delta)
-	model_control(xform, delta, final_turn_axis)
+	model_control(xform, delta, final_turn_axis, -accel_str, shift_axis)
 	ui_control()
 	if timer_started:
 		current_time += delta
