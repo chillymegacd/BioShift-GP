@@ -1,10 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://hb1bhnr003o2"]
+[gd_scene load_steps=15 format=3 uid="uid://hb1bhnr003o2"]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_5csgb"]
 [ext_resource type="PackedScene" uid="uid://basawpe0yy462" path="res://blend/rabbit.blend" id="2_y2ha5"]
 [ext_resource type="PackedScene" uid="uid://ciam4qy01bns6" path="res://blend/thrust.blend" id="3_dewk4"]
 [ext_resource type="Texture2D" uid="uid://j24eq6s24ei6" path="res://blend/eye.png" id="3_r6xuq"]
 [ext_resource type="FontFile" uid="uid://csh4m008nb3d2" path="res://ttf/audio-nugget.regular.ttf" id="5_3q4cm"]
+[ext_resource type="Texture2D" uid="uid://dsynmu3cu6ixu" path="res://blend/progress2.png" id="5_vu56e"]
+[ext_resource type="Texture2D" uid="uid://3pe3niy68yac" path="res://blend/progress1.png" id="6_33w3b"]
+[ext_resource type="AudioStream" uid="uid://chdcou26ld44u" path="res://F-Zero SFX - Machine Top Speed.wav" id="6_vg24q"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_amxbf"]
 shading_mode = 0
@@ -34,27 +37,26 @@ height = 1.75
 
 [node name="Player" type="CharacterBody3D"]
 floor_stop_on_slope = false
-floor_max_angle = 1.22173
 floor_snap_length = 2.0
 script = ExtResource("1_5csgb")
 
 [node name="Model" parent="." instance=ExtResource("2_y2ha5")]
 
-[node name="Skeleton3D" parent="Model/Armature" index="0"]
+[node name="Skeleton3D" parent="Model/Armature" index="2"]
 bones/5/rotation = Quaternion(-4.75799e-08, -5.80517e-09, -0.707107, 0.707107)
 bones/6/rotation = Quaternion(1.48748e-07, 5.45939e-22, -1.12302e-14, 1)
 bones/7/rotation = Quaternion(-2.20647e-07, -1.67262e-07, 0.707107, 0.707107)
-bones/9/rotation = Quaternion(-0.684831, 0.176084, 0.684832, -0.176085)
-bones/9/scale = Vector3(1, 1, 0.999999)
-bones/10/rotation = Quaternion(-4.44335e-08, 1.68241e-07, 0.0825004, 0.996591)
-bones/11/rotation = Quaternion(0.684831, 0.176084, 0.684832, 0.176085)
-bones/11/scale = Vector3(1, 1, 0.999999)
-bones/12/rotation = Quaternion(-4.44335e-08, -1.68241e-07, -0.0825004, 0.996591)
+bones/9/scale = Vector3(1, 1, 1)
+bones/10/rotation = Quaternion(0.0528022, -0.00477476, 0.0164216, 0.998459)
+bones/10/scale = Vector3(1, 1, 1)
+bones/11/scale = Vector3(1, 1, 1)
+bones/12/rotation = Quaternion(0.0528022, 0.00477476, -0.0164215, 0.998459)
+bones/12/scale = Vector3(1, 1, 1)
 
-[node name="Eye_l" parent="Model/Armature/Skeleton3D" index="9"]
+[node name="Eye_l" parent="Model/Armature/Skeleton3D" index="10"]
 surface_material_override/0 = SubResource("StandardMaterial3D_amxbf")
 
-[node name="Eye_r" parent="Model/Armature/Skeleton3D" index="10"]
+[node name="Eye_r" parent="Model/Armature/Skeleton3D" index="11"]
 surface_material_override/0 = SubResource("StandardMaterial3D_6i8jf")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="Model/Armature/Skeleton3D" index="27"]
@@ -88,25 +90,39 @@ surface_material_override/0 = SubResource("StandardMaterial3D_u31i8")
 surface_material_override/1 = SubResource("StandardMaterial3D_wsmx7")
 surface_material_override/2 = SubResource("StandardMaterial3D_kdb0o")
 
-[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Model/Armature/Skeleton3D/BoneAttachment3D"]
-transform = Transform3D(-1, 0, 5.6426e-07, 0, 1, 0, -5.6426e-07, 0, -1, 0, -0.157864, 0)
-remote_path = NodePath("../../../../../CollisionShape3D")
+[node name="RayCast3D" type="RayCast3D" parent="Model"]
+transform = Transform3D(1, 0, -5.68434e-14, 0, 1, 0, 5.68434e-14, 0, 1, 0, -0.5, 0)
+target_position = Vector3(0, -100, 0)
+debug_shape_thickness = 5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.223399, 0)
+transform = Transform3D(1, 0, -5.68434e-14, 0, 1, 0, 5.68434e-14, 0, 1, 0, -0.223399, 0)
 shape = SubResource("CapsuleShape3D_dcdqx")
-
-[node name="RayCast3D" type="RayCast3D" parent="CollisionShape3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.276601, 0)
-target_position = Vector3(0, -2, 0)
-debug_shape_thickness = 5
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.977416, 0.211325, 0, -0.211325, 0.977416, 0, 2.36, 4)
 current = true
-fov = 80.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer"]
+texture_filter = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -104.0
+offset_top = -104.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+step = 0.001
+value = 64.0
+fill_mode = 4
+texture_under = ExtResource("5_vu56e")
+texture_progress = ExtResource("6_33w3b")
 
 [node name="Time" type="Label" parent="CanvasLayer"]
 offset_right = 40.0
@@ -125,8 +141,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -40.0
-offset_top = -27.0
+offset_left = -349.0
+offset_top = -131.0
+offset_right = -60.0
+offset_bottom = -56.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 0.631373, 0, 1)
@@ -135,12 +153,25 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("5_3q4cm")
 theme_override_font_sizes/font_size = 24
-text = "0"
+text = "SPEED: 000
+GEAR: 4"
 horizontal_alignment = 2
 vertical_alignment = 2
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
 visible = false
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_vg24q")
+autoplay = true
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, -5.68434e-14, 0, 1, 0, 5.68434e-14, 0, 1, 0, -0.223399, 0)
+shape = SubResource("CapsuleShape3D_dcdqx")
 
 [editable path="Model"]
 [editable path="Model/Armature/Skeleton3D/BoneAttachment3D/thrust0"]

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccktdrhvhm7ra"]
+
+[ext_resource type="Script" path="res://src/checkpoint.gd" id="1_plqb1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s21rf"]
+size = Vector3(100, 100, 10)
+
+[node name="Checkpoint" type="Area3D"]
+collision_layer = 0
+monitorable = false
+script = ExtResource("1_plqb1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_s21rf")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
