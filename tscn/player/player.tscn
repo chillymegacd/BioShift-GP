@@ -37,6 +37,7 @@ height = 1.75
 
 [node name="Player" type="CharacterBody3D"]
 floor_stop_on_slope = false
+floor_max_angle = 1.0472
 floor_snap_length = 2.0
 script = ExtResource("1_5csgb")
 

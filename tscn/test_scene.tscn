@@ -1,39 +1,113 @@
-[gd_scene load_steps=18 format=3 uid="uid://cwgyq2ccdtvgi"]
+[gd_scene load_steps=22 format=3 uid="uid://cwgyq2ccdtvgi"]
 
 [ext_resource type="PackedScene" uid="uid://hb1bhnr003o2" path="res://tscn/player/player.tscn" id="1_fihvj"]
+[ext_resource type="Texture2D" uid="uid://4qw57ln5s2pg" path="res://img/skyrender.png" id="2_gh1w0"]
 [ext_resource type="PackedScene" uid="uid://dlmq807ris5sn" path="res://blend/easy-course.blend" id="2_r71vk"]
+[ext_resource type="Texture2D" uid="uid://dyo8wuxx40w48" path="res://img/smooth-sand-dunes-1024x1024.png" id="3_btapb"]
 [ext_resource type="Texture2D" uid="uid://bloe6ey8kas27" path="res://blend/road.png" id="3_ujwpo"]
 [ext_resource type="PackedScene" uid="uid://ccktdrhvhm7ra" path="res://tscn/checkpoint.tscn" id="4_0vxwa"]
-[ext_resource type="Shader" path="res://tscn/water.gdshader" id="4_sa0cx"]
 
-[sub_resource type="Gradient" id="Gradient_72ah0"]
-offsets = PackedFloat32Array(0, 0.15625, 0.71875, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.105882, 0.14902, 0.835294, 1, 0.482353, 0.686275, 1, 1, 0.811765, 1, 1, 1)
+[sub_resource type="Animation" id="Animation_dhval"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material_override:next_pass:uv1_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ss5w1"]
-gradient = SubResource("Gradient_72ah0")
-fill_from = Vector2(1, 1)
+[sub_resource type="Animation" id="Animation_uk1yn"]
+resource_name = "new_animation"
+length = 10.0
+loop_mode = 1
+step = 1.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material_override:next_pass:uv1_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 10),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-1, -1, 0)]
+}
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ufigi"]
-panorama = SubResource("GradientTexture2D_ss5w1")
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qfr15"]
+_data = {
+"RESET": SubResource("Animation_dhval"),
+"new_animation": SubResource("Animation_uk1yn")
+}
 
-[sub_resource type="Sky" id="Sky_qvw2d"]
-sky_material = SubResource("PanoramaSkyMaterial_ufigi")
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ymg5n"]
+panorama = ExtResource("2_gh1w0")
+
+[sub_resource type="Sky" id="Sky_2upex"]
+sky_material = SubResource("PanoramaSkyMaterial_ymg5n")
 
 [sub_resource type="Environment" id="Environment_7end0"]
 background_mode = 2
-sky = SubResource("Sky_qvw2d")
+sky = SubResource("Sky_2upex")
 fog_light_color = Color(0, 0, 1, 1)
-fog_density = 0.0013
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v4ia1"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ngwo"]
+specular_mode = 2
+albedo_texture = ExtResource("3_btapb")
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6dk2a"]
 albedo_texture = ExtResource("3_ujwpo")
 metallic = 1.0
 roughness = 0.5
 
+[sub_resource type="Animation" id="Animation_3aryj"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:surface_material_override/0:next_pass:uv1_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_bkg6j"]
+resource_name = "new_animation"
+length = 60.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:surface_material_override/0:next_pass:uv1_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 60),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-1, -1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_situg"]
+_data = {
+"RESET": SubResource("Animation_3aryj"),
+"new_animation": SubResource("Animation_bkg6j")
+}
+
 [sub_resource type="Gradient" id="Gradient_glgmu"]
 offsets = PackedFloat32Array(0, 0.205882, 1)
-colors = PackedColorArray(1, 1, 1, 0.0980392, 1, 1, 1, 0.545098, 1, 1, 1, 0.0980392)
+colors = PackedColorArray(1, 1, 1, 0.462745, 1, 1, 1, 0.87451, 1, 1, 1, 0.470588)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_s8n6s"]
 gradient = SubResource("Gradient_glgmu")
@@ -45,19 +119,18 @@ cull_mode = 2
 shading_mode = 0
 albedo_texture = SubResource("GradientTexture2D_s8n6s")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4likk"]
-shader = ExtResource("4_sa0cx")
-shader_parameter/uv_scale = 1.0
-shader_parameter/color_alpha = 1.0
-
-[sub_resource type="Gradient" id="Gradient_0h1wu"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ghrun"]
-gradient = SubResource("Gradient_0h1wu")
-width = 16
-height = 16
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u0xrt"]
+albedo_texture = ExtResource("3_ujwpo")
+metallic = 1.0
+roughness = 0.5
 
 [node name="TestScene" type="Node3D"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_qfr15")
+}
+autoplay = "new_animation"
 
 [node name="Player" parent="." instance=ExtResource("1_fihvj")]
 transform = Transform3D(0.848944, 0, 0.528483, 0, 1, 0, -0.528483, 0, 0.848944, 851.315, -6.52207, -721.856)
@@ -72,9 +145,25 @@ shadow_opacity = 0.5
 environment = SubResource("Environment_7end0")
 
 [node name="easy-course" parent="." instance=ExtResource("2_r71vk")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 
-[node name="Tube" parent="easy-course" index="1"]
-material_override = SubResource("StandardMaterial3D_v4ia1")
+[node name="Plane" parent="easy-course" index="1"]
+material_override = SubResource("StandardMaterial3D_3ngwo")
+
+[node name="Floor" parent="easy-course" index="2"]
+surface_material_override/0 = SubResource("StandardMaterial3D_6dk2a")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="easy-course/Floor" index="0"]
+libraries = {
+"": SubResource("AnimationLibrary_situg")
+}
+autoplay = "new_animation"
+
+[node name="Glass" parent="easy-course" index="4"]
+surface_material_override/0 = SubResource("StandardMaterial3D_d7tot")
+
+[node name="Frame" parent="easy-course" index="5"]
+surface_material_override/0 = SubResource("StandardMaterial3D_u0xrt")
 
 [node name="Checkpoint1" parent="easy-course" instance=ExtResource("4_0vxwa")]
 transform = Transform3D(0.963966, 0, 0.266027, 0, 1, 0, -0.266027, 0, 0.963966, 402.868, 3.81321, -430.816)
@@ -95,18 +184,5 @@ checkpoint_no = 4
 [node name="Checkpoint5" parent="easy-course" instance=ExtResource("4_0vxwa")]
 transform = Transform3D(-0.999884, 0, 0.0152535, 0, 1, 0, -0.0152535, 0, -0.999884, 174.392, 32.7135, 156.315)
 checkpoint_no = 5
-
-[node name="Glass" parent="easy-course" index="8"]
-surface_material_override/0 = SubResource("StandardMaterial3D_d7tot")
-
-[node name="WaterViewport" type="SubViewport" parent="."]
-
-[node name="Sprite2D" type="Sprite2D" parent="WaterViewport"]
-texture_repeat = 2
-material = SubResource("ShaderMaterial_4likk")
-texture = SubResource("GradientTexture2D_ghrun")
-centered = false
-region_enabled = true
-region_rect = Rect2(0, 0, 512, 512)
 
 [editable path="easy-course"]
